@@ -33,6 +33,3 @@ captures/
 
 # Idea config folder
 .idea/
-
-# Iml files
-*.iml
