@@ -1,11 +1,6 @@
 package com.gesture.recog;
 
 import android.app.Activity;
-import android.content.Context;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.os.Bundle;
 
 import java.io.BufferedWriter;
@@ -15,27 +10,47 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class SensorActivity extends Activity implements SensorEventListener {
+public class SensorActivity extends Activity {
 
     public static final String SERVER_IP = "SERVER_IP";
 
     private static final int PORT = 8888;
 
-    private SensorManager mSensorManager;
-
     private ExecutorService mExecutorService = Executors.newSingleThreadExecutor();
 
-    private Sensor mSensor;
+    private float xAcceleration;
 
-    private float x;
+    private float yAcceleration;
 
-    private float y;
+    private float zAcceleration;
 
-    private float z;
+    private float xRotation;
+
+    private float yRotation;
+
+    private float zRotation;
 
     private String mServerAddress;
 
     private Sender mSender;
+
+    private AccelerationListener mAccelerationListener = new AccelerationListener() {
+        @Override
+        public void onAccelerationChanged(float x, float y, float z) {
+            xAcceleration = x;
+            yAcceleration = y;
+            zAcceleration = z;
+        }
+    };
+
+    private RotationListener mRotationListener = new RotationListener() {
+        @Override
+        public void onRotationChanged(float x, float y, float z) {
+            xRotation = x;
+            yRotation = y;
+            zRotation = z;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,34 +58,14 @@ public class SensorActivity extends Activity implements SensorEventListener {
         setContentView(R.layout.activity_sensor);
 
         mServerAddress = getIntent().getStringExtra(SERVER_IP);
-
-        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-    }
-
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
-            onLinearAccelerationChanged(event);
-        }
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-    }
-
-    private void onLinearAccelerationChanged(SensorEvent event) {
-        float[] values = event.values;
-        x = values[0];
-        y = values[1];
-        z = values[2];
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_FASTEST);
+
+        AccelerationMonitor.getInstance().register(mAccelerationListener);
+        RotationMonitor.getInstance().register(mRotationListener);
 
         mSender = new Sender();
         mExecutorService.submit(mSender);
@@ -79,7 +74,9 @@ public class SensorActivity extends Activity implements SensorEventListener {
     @Override
     protected void onPause() {
         super.onPause();
-        mSensorManager.unregisterListener(this);
+
+        AccelerationMonitor.getInstance().unregister(mAccelerationListener);
+        RotationMonitor.getInstance().unregister(mRotationListener);
 
         mSender.cancel();
         mSender = null;
@@ -101,9 +98,12 @@ public class SensorActivity extends Activity implements SensorEventListener {
                 socket = new Socket(mServerAddress, PORT);
                 PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())));
                 while (!cancel) {
-                    out.printf("%10.2f", x);
-                    out.printf("%10.2f", y);
-                    out.printf("%10.2f\n", z);
+                    out.printf("%10.2f", xAcceleration);
+                    out.printf("%10.2f", yAcceleration);
+                    out.printf("%10.2f", zAcceleration);
+                    out.printf("%10.2f", xRotation);
+                    out.printf("%10.2f", yRotation);
+                    out.printf("%10.2f\n", zRotation);
                     out.flush();
 
                     Thread.sleep(2);
@@ -111,11 +111,7 @@ public class SensorActivity extends Activity implements SensorEventListener {
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
-                try {
-                    socket.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                Utils.closeQuietly(socket);
             }
         }
     }
