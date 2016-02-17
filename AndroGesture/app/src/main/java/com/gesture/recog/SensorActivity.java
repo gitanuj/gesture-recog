@@ -2,6 +2,9 @@ package com.gesture.recog;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
@@ -34,6 +37,8 @@ public class SensorActivity extends Activity {
 
     private Sender mSender;
 
+    private TextView mText;
+
     private AccelerationListener mAccelerationListener = new AccelerationListener() {
         @Override
         public void onAccelerationChanged(float x, float y, float z) {
@@ -57,7 +62,11 @@ public class SensorActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sensor);
 
+        mText = (TextView) findViewById(R.id.tv_text);
+
         mServerAddress = getIntent().getStringExtra(SERVER_IP);
+
+        mText.setText("Connected to " + mServerAddress);
     }
 
     @Override
