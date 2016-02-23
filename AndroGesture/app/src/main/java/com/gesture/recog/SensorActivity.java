@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -13,7 +11,7 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class SensorActivity extends Activity {
+public class SensorActivity extends Activity implements HoldButton.HoldListener {
 
     public static final String SERVER_IP = "SERVER_IP";
 
@@ -39,6 +37,8 @@ public class SensorActivity extends Activity {
 
     private TextView mText;
 
+    private HoldButton mHoldButton;
+
     private AccelerationListener mAccelerationListener = new AccelerationListener() {
         @Override
         public void onAccelerationChanged(float x, float y, float z) {
@@ -63,6 +63,7 @@ public class SensorActivity extends Activity {
         setContentView(R.layout.activity_sensor);
 
         mText = (TextView) findViewById(R.id.tv_text);
+        mHoldButton = (HoldButton) findViewById(R.id.hb_hold_button);
 
         mServerAddress = getIntent().getStringExtra(SERVER_IP);
 
@@ -75,9 +76,6 @@ public class SensorActivity extends Activity {
 
         AccelerationMonitor.getInstance().register(mAccelerationListener);
         RotationMonitor.getInstance().register(mRotationListener);
-
-        mSender = new Sender();
-        mExecutorService.submit(mSender);
     }
 
     @Override
@@ -87,6 +85,18 @@ public class SensorActivity extends Activity {
         AccelerationMonitor.getInstance().unregister(mAccelerationListener);
         RotationMonitor.getInstance().unregister(mRotationListener);
 
+        mSender.cancel();
+        mSender = null;
+    }
+
+    @Override
+    public void onHoldDown() {
+        mSender = new Sender();
+        mExecutorService.submit(mSender);
+    }
+
+    @Override
+    public void onRelease() {
         mSender.cancel();
         mSender = null;
     }
@@ -107,12 +117,12 @@ public class SensorActivity extends Activity {
                 socket = new Socket(mServerAddress, PORT);
                 PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())));
                 while (!cancel) {
-                    out.printf("%10.2f", xAcceleration);
-                    out.printf("%10.2f", yAcceleration);
-                    out.printf("%10.2f", zAcceleration);
-                    out.printf("%10.2f", xRotation);
-                    out.printf("%10.2f", yRotation);
-                    out.printf("%10.2f\n", zRotation);
+                    out.printf(" %.2f", xAcceleration);
+                    out.printf(" %.2f", yAcceleration);
+                    out.printf(" %.2f", zAcceleration);
+                    out.printf(" %.2f", xRotation);
+                    out.printf(" %.2f", yRotation);
+                    out.printf(" %.2f\n", zRotation);
                     out.flush();
 
                     Thread.sleep(2);

@@ -2,13 +2,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center"
     android:keepScreenOn="true"
     android:orientation="vertical">
 
     <TextView
         android:id="@+id/tv_text"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="20dp" />
+
+    <com.gesture.recog.HoldButton
+        android:id="@+id/hb_hold_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Press Me!" />
 
 </LinearLayout>
