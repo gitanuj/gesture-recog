@@ -68,6 +68,7 @@ public class SensorActivity extends Activity implements HoldButton.HoldListener 
         mServerAddress = getIntent().getStringExtra(SERVER_IP);
 
         mText.setText("Connected to " + mServerAddress);
+        mHoldButton.setHoldListener(this);
     }
 
     @Override
@@ -85,8 +86,7 @@ public class SensorActivity extends Activity implements HoldButton.HoldListener 
         AccelerationMonitor.getInstance().unregister(mAccelerationListener);
         RotationMonitor.getInstance().unregister(mRotationListener);
 
-        mSender.cancel();
-        mSender = null;
+        releaseSender();
     }
 
     @Override
@@ -97,8 +97,14 @@ public class SensorActivity extends Activity implements HoldButton.HoldListener 
 
     @Override
     public void onRelease() {
-        mSender.cancel();
-        mSender = null;
+        releaseSender();
+    }
+
+    private void releaseSender() {
+        if (mSender != null) {
+            mSender.cancel();
+            mSender = null;
+        }
     }
 
     private class Sender implements Runnable {
