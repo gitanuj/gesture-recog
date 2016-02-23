@@ -2,6 +2,9 @@ package com.gesture.recog;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
@@ -39,6 +42,8 @@ public class SensorActivity extends Activity {
 
     private TextView mText;
 
+    private Button holdButton;
+
     private AccelerationListener mAccelerationListener = new AccelerationListener() {
         @Override
         public void onAccelerationChanged(float x, float y, float z) {
@@ -67,9 +72,51 @@ public class SensorActivity extends Activity {
         mServerAddress = getIntent().getStringExtra(SERVER_IP);
 
         mText.setText("Connected to " + mServerAddress);
+
+        holdButton = (Button) findViewById(R.id.hold_button);
+
+        holdButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                    case MotionEvent.ACTION_DOWN:
+                        v.setPressed(true);
+                        // Start action ...
+
+                        AccelerationMonitor.getInstance().register(mAccelerationListener);
+                        RotationMonitor.getInstance().register(mRotationListener);
+
+                        mSender = new Sender();
+                        mExecutorService.submit(mSender);
+
+                        break;
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_OUTSIDE:
+                    case MotionEvent.ACTION_CANCEL:
+                        v.setPressed(false);
+                        // Stop action ...
+
+                        AccelerationMonitor.getInstance().unregister(mAccelerationListener);
+                        RotationMonitor.getInstance().unregister(mRotationListener);
+
+                        mSender.cancel();
+                        mSender = null;
+
+                        break;
+                    case MotionEvent.ACTION_POINTER_DOWN:
+                        break;
+                    case MotionEvent.ACTION_POINTER_UP:
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        break;
+                }
+
+                return true;
+            }
+        });
     }
 
-    @Override
+   /* @Override
     protected void onResume() {
         super.onResume();
 
@@ -89,7 +136,7 @@ public class SensorActivity extends Activity {
 
         mSender.cancel();
         mSender = null;
-    }
+    }*/
 
     private class Sender implements Runnable {
 

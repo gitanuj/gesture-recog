@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">AndroGesture</string>
+    <string name="gesture">Hold to Record Gesture</string>
 </resources>
