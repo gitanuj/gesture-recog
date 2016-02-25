@@ -23,10 +23,12 @@ while 1:
     accel_x = []
     accel_y = []
     accel_z = []
-    accel = []
     gyro_x = []
     gyro_y = []
     gyro_z = []
+
+    #TODO: what to do with these?
+    accel = []
     gyro = []
 
     while 1:
@@ -53,30 +55,36 @@ while 1:
                 writer = csv.writer(accelxfile, lineterminator=os.linesep)
                 for x_data in accel_x:
                     writer.writerow([x_data])
+                writer.writerow(["-"]*6)
 
             with open('accel_y.csv', 'a') as accelyfile:
                 writer = csv.writer(accelyfile, lineterminator=os.linesep)
                 for y_data in accel_y:
                     writer.writerow([y_data])
+                writer.writerow(["-"]*6)
 
             with open('accel_z.csv', 'a') as accelzfile:
                 writer = csv.writer(accelzfile, lineterminator=os.linesep)
                 for z_data in accel_z:
                     writer.writerow([z_data])
+                writer.writerow(["-"]*6)
 
             with open('gyro_x.csv', 'a') as gfile:
                 writer = csv.writer(gfile, lineterminator=os.linesep)
                 for x_data in gyro_x:
                     writer.writerow([x_data])
+                writer.writerow(["-"]*6)
 
             with open('gyro_y.csv', 'a') as gfile:
                 writer = csv.writer(gfile, lineterminator=os.linesep)
                 for y_data in gyro_y:
                     writer.writerow([y_data])
+                writer.writerow(["-"]*6)
 
             with open('gyro_z.csv', 'a') as gfile:
                 writer = csv.writer(gfile, lineterminator=os.linesep)
                 for z_data in gyro_z:
                     writer.writerow([z_data])
+                writer.writerow(["-"]*6)
 
     		break
