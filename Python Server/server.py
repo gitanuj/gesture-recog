@@ -2,6 +2,7 @@ import socket
 import atexit
 import sys
 import csv
+import os
 
 def close_socket():
 	s.close()
@@ -49,32 +50,32 @@ while 1:
             print accel_x
 
             with open('accel_x.csv', 'a') as accelxfile:
-                writer = csv.writer(accelxfile, lineterminator="\n")
+                writer = csv.writer(accelxfile, lineterminator=os.linesep)
                 for x_data in accel_x:
                     writer.writerow([x_data])
 
             with open('accel_y.csv', 'a') as accelyfile:
-                writer = csv.writer(accelyfile, lineterminator="\n")
+                writer = csv.writer(accelyfile, lineterminator=os.linesep)
                 for y_data in accel_y:
                     writer.writerow([y_data])
 
             with open('accel_z.csv', 'a') as accelzfile:
-                writer = csv.writer(accelzfile, lineterminator="\n")
+                writer = csv.writer(accelzfile, lineterminator=os.linesep)
                 for z_data in accel_z:
                     writer.writerow([z_data])
 
             with open('gyro_x.csv', 'a') as gfile:
-                writer = csv.writer(gfile, lineterminator="\n")
+                writer = csv.writer(gfile, lineterminator=os.linesep)
                 for x_data in gyro_x:
                     writer.writerow([x_data])
 
             with open('gyro_y.csv', 'a') as gfile:
-                writer = csv.writer(gfile, lineterminator="\n")
+                writer = csv.writer(gfile, lineterminator=os.linesep)
                 for y_data in gyro_y:
                     writer.writerow([y_data])
 
             with open('gyro_z.csv', 'a') as gfile:
-                writer = csv.writer(gfile, lineterminator="\n")
+                writer = csv.writer(gfile, lineterminator=os.linesep)
                 for z_data in gyro_z:
                     writer.writerow([z_data])
 
