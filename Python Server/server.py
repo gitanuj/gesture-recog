@@ -49,32 +49,32 @@ while 1:
             print accel_x
 
             with open('accel_x.csv', 'a') as accelxfile:
-                writer = csv.writer(accelxfile)
+                writer = csv.writer(accelxfile, lineterminator="\n")
                 for x_data in accel_x:
                     writer.writerow([x_data])
 
             with open('accel_y.csv', 'a') as accelyfile:
-                writer = csv.writer(accelyfile)
+                writer = csv.writer(accelyfile, lineterminator="\n")
                 for y_data in accel_y:
                     writer.writerow([y_data])
 
             with open('accel_z.csv', 'a') as accelzfile:
-                writer = csv.writer(accelzfile)
+                writer = csv.writer(accelzfile, lineterminator="\n")
                 for z_data in accel_z:
                     writer.writerow([z_data])
 
             with open('gyro_x.csv', 'a') as gfile:
-                writer = csv.writer(gfile)
+                writer = csv.writer(gfile, lineterminator="\n")
                 for x_data in gyro_x:
                     writer.writerow([x_data])
 
             with open('gyro_y.csv', 'a') as gfile:
-                writer = csv.writer(gfile)
+                writer = csv.writer(gfile, lineterminator="\n")
                 for y_data in gyro_y:
                     writer.writerow([y_data])
 
             with open('gyro_z.csv', 'a') as gfile:
-                writer = csv.writer(gfile)
+                writer = csv.writer(gfile, lineterminator="\n")
                 for z_data in gyro_z:
                     writer.writerow([z_data])
 
