@@ -21,7 +21,7 @@ while 1:
             client.close()
             break
 
-    raw_file = open(str(sys.argv[1]) + '.txt', 'a')
+    raw_file = open(str(sys.argv[1]), 'a')
 
     for chunk in time_series:
         for line in chunk.splitlines():
