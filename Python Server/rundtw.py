@@ -2,13 +2,8 @@ import numpy as np
 import sys
 import os
 from math import sqrt
-from decimal import *
 from StringIO import StringIO
 from dtw_multi import DTWDistance
-
-# start script
-#test gesture should be a single line containing all (ax,ay,az,gx,gy,gz) readings of a single gesture
-testgesture1 = np.genfromtxt(str(sys.argv[1])).reshape(-1, 1)
 
 dataPath = ''
 dataDirs = []
@@ -24,14 +19,7 @@ for dirName, subDirList, fileList in os.walk(currDir):
 print dataPath
 print dataDirs
 
-minDTWDistance = Decimal(sys.float_info.max)
-
-minAX = Decimal(sys.float_info.max)
-minAY = Decimal(sys.float_info.max)
-minAZ = Decimal(sys.float_info.max)
-minGX = Decimal(sys.float_info.max)
-minGY = Decimal(sys.float_info.max)
-minGZ = Decimal(sys.float_info.max)
+minDTWDistance = sys.float_info.max
 
 theClass = ''
 
@@ -40,44 +28,6 @@ for dataDir in dataDirs:
     currPath = dataPath + ("/" + dataDir + "/")
     print currPath
 
-    axTrain = None
-    ayTrain = None
-    azTrain = None
-    gxTrain = None
-    gyTrain = None
-    gzTrain = None
-
-    try:
-        axTrain = open(currPath + "ax.txt", "r")
-    except:
-        print 'couldnt open ax train'
-
-    try:
-        ayTrain = open(currPath + "ay.txt", "r")
-    except:
-        print 'couldnt open ay train'
-
-    try:
-        azTrain = open(currPath + "az.txt", "r")
-    except:
-        print 'couldnt open az train'
-
-    try:
-        gxTrain = open(currPath + "gx.txt", "r")
-    except:
-        print 'couldnt open gx train'
-
-    try:
-        gyTrain = open(currPath + "gy.txt", "r")
-    except:
-        print 'couldnt open gy train'
-
-    try:
-        gzTrain = open(currPath + "gz.txt", "r")
-    except:
-        print 'couldnt open gz train'
-
-    # arraysAx = [np.array(map(Decimal, line.split())) for line in axTrain]
     arraysAx = []
     arraysAy = []
     arraysAz = []
