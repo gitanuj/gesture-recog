@@ -12,9 +12,16 @@ files.append(open('gy.txt', 'w'))
 files.append(open('gz.txt', 'w'))
 
 for line in data:
+	if not line.strip():
+		continue
+		
 	for value_set in line.split(','):
-		for i, value in enumerate(value_set.split()):
-			files[i].write(value + ' ')
+		if not value_set.strip():
+			continue
+
+		values = value_set.split()
+		for i in range(0, 6):
+			files[i].write(values[i] + ' ')
 	for file in files:
 		file.write('\n')
 

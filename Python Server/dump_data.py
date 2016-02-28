@@ -22,10 +22,6 @@ while 1:
             break
 
     raw_file = open(str(sys.argv[1]), 'a')
-
-    for chunk in time_series:
-        for line in chunk.splitlines():
-            raw_file.write(line + ',')
-        
+    raw_file.write(''.join(time_series))
     raw_file.write('\n')
     raw_file.close()
