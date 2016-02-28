@@ -123,14 +123,8 @@ public class SensorActivity extends Activity implements HoldButton.HoldListener 
                 socket = new Socket(mServerAddress, PORT);
                 PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())));
                 while (!cancel) {
-                    out.printf(" %.2f", xAcceleration);
-                    out.printf(" %.2f", yAcceleration);
-                    out.printf(" %.2f", zAcceleration);
-                    out.printf(" %.2f", xRotation);
-                    out.printf(" %.2f", yRotation);
-                    out.printf(" %.2f\n", zRotation);
+                    out.printf("%f %f %f %f %f %f,", xAcceleration, yAcceleration, zAcceleration, xRotation, yRotation, zRotation);
                     out.flush();
-
                     Thread.sleep(2);
                 }
             } catch (Exception e) {
