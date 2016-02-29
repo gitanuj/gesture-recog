@@ -27,8 +27,9 @@ def DTWDistance(s):
         
     return sqrt(DTW[len1-1, len2-1])
 
-data = []
-for i in range(1, len(sys.argv)):
-    data.append(np.genfromtxt(str(sys.argv[i])).reshape(-1, 1))
+if __name__ == '__main__':
+    data = []
+    for i in range(1, len(sys.argv)):
+        data.append(np.genfromtxt(str(sys.argv[i])).reshape(-1, 1))
 
-print DTWDistance(data)
+    print DTWDistance(data)
