@@ -86,3 +86,14 @@ def classify(ax, ay, az, gx, gy, gz):
                 theClass = dataDir
 
     return theClass
+
+if __name__ == '__main__':
+    ax = open(str(sys.argv[1])).read()
+    ay = open(str(sys.argv[2])).read()
+    az = open(str(sys.argv[3])).read()
+    gx = open(str(sys.argv[4])).read()
+    gy = open(str(sys.argv[5])).read()
+    gz = open(str(sys.argv[6])).read()
+
+    clazz = classify(ax, ay, az, gx, gy, gz)
+    print 'Detected: ' + clazz
