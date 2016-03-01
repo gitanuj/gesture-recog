@@ -7,7 +7,7 @@ from collections import defaultdict
 from six.moves import xrange
 
 
-def fastdtw(x, y, radius=1, dist=lambda a, b: abs(a - b)):
+def fastdtw(x, y, radius=1, dist=lambda a, b: (a - b)**2):
     min_time_size = radius + 2
 
     if len(x) < min_time_size or len(y) < min_time_size:

@@ -3,6 +3,11 @@ import sys
 import os
 from StringIO import StringIO
 from dtw_multi import DTWDistance
+from fastdtw import fastdtw
+
+def format_data(data):
+    return [float(i) for i in data.split()]
+    # return np.genfromtxt(StringIO(data)).reshape(-1, 1)
 
 # returns a class for space separated time series strings
 def classify(ax, ay, az, gx, gy, gz):
@@ -17,15 +22,15 @@ def classify(ax, ay, az, gx, gy, gz):
             dataDirs = subDirList
 
     # prepare input data
-    ax = np.genfromtxt(StringIO(ax)).reshape(-1, 1)
-    ay = np.genfromtxt(StringIO(ay)).reshape(-1, 1)
-    az = np.genfromtxt(StringIO(az)).reshape(-1, 1)
-    gx = np.genfromtxt(StringIO(gx)).reshape(-1, 1)
-    gy = np.genfromtxt(StringIO(gy)).reshape(-1, 1)
-    gz = np.genfromtxt(StringIO(gz)).reshape(-1, 1)
+    ax = format_data(ax)
+    ay = format_data(ay)
+    az = format_data(az)
+    gx = format_data(gx)
+    gy = format_data(gy)
+    gz = format_data(gz)
 
     minDTWDistance = sys.float_info.max
-    theClass = ''
+    theClass = 'undefined'
 
     # now calculate DTWDistance for each gesture
     for dataDir in dataDirs:
@@ -41,22 +46,22 @@ def classify(ax, ay, az, gx, gy, gz):
         arraysGz = []
 
         for line in open(currPath + "ax.txt").readlines():
-            arraysAx.append(np.genfromtxt(StringIO(line)).reshape(-1, 1))
+            arraysAx.append(format_data(line))
 
         for line in open(currPath + "ay.txt").readlines():
-            arraysAy.append(np.genfromtxt(StringIO(line)).reshape(-1, 1))
+            arraysAy.append(format_data(line))
 
         for line in open(currPath + "ay.txt").readlines():
-            arraysAz.append(np.genfromtxt(StringIO(line)).reshape(-1, 1))
+            arraysAz.append(format_data(line))
 
         for line in open(currPath + "gx.txt").readlines():
-            arraysGx.append(np.genfromtxt(StringIO(line)).reshape(-1, 1))
+            arraysGx.append(format_data(line))
 
         for line in open(currPath + "gy.txt").readlines():
-            arraysGy.append(np.genfromtxt(StringIO(line)).reshape(-1, 1))
+            arraysGy.append(format_data(line))
 
         for line in open(currPath + "gz.txt").readlines():
-            arraysGz.append(np.genfromtxt(StringIO(line)).reshape(-1, 1))
+            arraysGz.append(format_data(line))
 
         #assuming all training sets have equal length
         for i in range(0, len(arraysAx)):
@@ -65,20 +70,25 @@ def classify(ax, ay, az, gx, gy, gz):
             train_test.append(arraysAx[i])
             train_test.append(arraysAy[i])
             train_test.append(arraysAz[i])
-            train_test.append(arraysGx[i])
-            train_test.append(arraysGy[i])
-            train_test.append(arraysGz[i])
+            # train_test.append(arraysGx[i])
+            # train_test.append(arraysGy[i])
+            # train_test.append(arraysGz[i])
             
             # then add test data
             train_test.append(ax)
             train_test.append(ay)
             train_test.append(az)
-            train_test.append(gx)
-            train_test.append(gy)
-            train_test.append(gz)
+            # train_test.append(gx)
+            # train_test.append(gy)
+            # train_test.append(gz)
 
             # calculate DTW
-            currDTW = DTWDistance(train_test)
+            # currDTW = DTWDistance(train_test)
+            dtwx = fastdtw(arraysAx[i], ax)[0]
+            dtwy = fastdtw(arraysAy[i], ay)[0]
+            dtwz = fastdtw(arraysAz[i], az)[0]
+
+            currDTW = dtwx+dtwy+dtwx
             print currDTW
 
             if currDTW < minDTWDistance:
