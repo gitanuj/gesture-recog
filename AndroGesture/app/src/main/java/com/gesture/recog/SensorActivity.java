@@ -42,10 +42,7 @@ public class SensorActivity extends Activity implements HoldButton.HoldListener 
 
     private HoldButton mHoldButton;
 
-    //keyboard
-    private Button keyButton;
-
-
+    private Button mKeyboardButton;
 
     private AccelerationListener mAccelerationListener = new AccelerationListener() {
         @Override
@@ -70,27 +67,23 @@ public class SensorActivity extends Activity implements HoldButton.HoldListener 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sensor);
 
-        //keyboard
-        keyButton = (Button) findViewById(R.id.keyboard_control);
-        keyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(SensorActivity.this, KeyActivity.class);
-                startActivity(intent);
-            }
-        });
-
         mText = (TextView) findViewById(R.id.tv_text);
         mHoldButton = (HoldButton) findViewById(R.id.hb_hold_button);
-
-
+        mKeyboardButton = (Button) findViewById(R.id.btn_keyboard);
 
         mServerAddress = getIntent().getStringExtra(SERVER_IP);
 
         mText.setText("Connected to " + mServerAddress);
         mHoldButton.setHoldListener(this);
 
-
+        mKeyboardButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SensorActivity.this, KeyboardActivity.class);
+                intent.putExtra(KeyboardActivity.SERVER_IP, mServerAddress);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override

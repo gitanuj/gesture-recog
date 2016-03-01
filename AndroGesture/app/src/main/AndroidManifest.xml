@@ -25,6 +25,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/Base.Theme.AppCompat.Light" />
 
+        <activity
+            android:name=".KeyboardActivity"
+            android:theme="@style/Base.Theme.AppCompat.Light" />
+
     </application>
 
 </manifest>

@@ -26,11 +26,8 @@ public class HomeActivity extends Activity implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-
         String serverAddress = mEditText.getText().toString();
-
         Intent intent = new Intent(this, SensorActivity.class);
-
         intent.putExtra(SensorActivity.SERVER_IP, serverAddress);
         startActivity(intent);
     }
