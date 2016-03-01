@@ -6,6 +6,12 @@
     android:keepScreenOn="true"
     android:orientation="vertical">
 
+    <com.gesture.recog.HoldButton
+        android:id="@+id/hb_hold_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hold to record gesture" />
+
     <TextView
         android:id="@+id/tv_text"
         android:layout_width="wrap_content"
@@ -13,10 +19,11 @@
         android:gravity="center"
         android:padding="20dp" />
 
-    <com.gesture.recog.HoldButton
-        android:id="@+id/hb_hold_button"
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hold to record gesture" />
+        android:text="Keyboard Control"
+        android:id="@+id/keyboard_control"
+        android:layout_gravity="center_horizontal" />
 
 </LinearLayout>

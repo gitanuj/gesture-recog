@@ -30,6 +30,7 @@ public class HomeActivity extends Activity implements View.OnClickListener {
         String serverAddress = mEditText.getText().toString();
 
         Intent intent = new Intent(this, SensorActivity.class);
+
         intent.putExtra(SensorActivity.SERVER_IP, serverAddress);
         startActivity(intent);
     }
