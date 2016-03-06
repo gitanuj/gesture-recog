@@ -16,7 +16,7 @@ def perform_action(clazz):
 	if clazz == 'flip':
 		pyautogui.hotkey('command', 'space')
 	elif clazz == 'top_down':
-		pyautogui.typewrite('Hello world!')
+		pyautogui.press('space')
 	elif clazz == 'right_left':
 		pyautogui.press('right')
 
