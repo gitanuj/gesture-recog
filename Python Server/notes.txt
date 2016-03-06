@@ -1,0 +1,11 @@
+http://stats.stackexchange.com/questions/131281/dynamic-time-warping-clustering
+
+1. Resample data points?  Scaling up Dynamic Time Warping for Datamining Applications
+2. FastDTW?  FastDTW: Toward Accurate Dynamic Time Warping in Linear Time and Space
+https://github.com/slaypni/fastdtw
+3. Normalize time series?
+4. Indexing time series? Exact indexing of dynamic time warping
+
+http://www.cs.ucr.edu/~eamonn/iSAX/iSAX.html
+
+https://github.com/nphoff/saxpy
