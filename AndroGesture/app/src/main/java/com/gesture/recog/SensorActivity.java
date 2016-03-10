@@ -42,7 +42,7 @@ public class SensorActivity extends Activity implements HoldButton.HoldListener 
 
     private HoldButton mHoldButton;
 
-    private Button mKeyboardButton;
+    private Button mKeyboardButton, mSettingsButton;
 
     private AccelerationListener mAccelerationListener = new AccelerationListener() {
         @Override
@@ -70,17 +70,28 @@ public class SensorActivity extends Activity implements HoldButton.HoldListener 
         mText = (TextView) findViewById(R.id.tv_text);
         mHoldButton = (HoldButton) findViewById(R.id.hb_hold_button);
         mKeyboardButton = (Button) findViewById(R.id.btn_keyboard);
+        mSettingsButton = (Button) findViewById(R.id.set_gestures_button);
 
         mServerAddress = getIntent().getStringExtra(SERVER_IP);
 
         mText.setText("Connected to " + mServerAddress);
         mHoldButton.setHoldListener(this);
 
+        //set listener for keyboard button
         mKeyboardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(SensorActivity.this, KeyboardActivity.class);
                 intent.putExtra(KeyboardActivity.SERVER_IP, mServerAddress);
+                startActivity(intent);
+            }
+        });
+
+        //set listener for settings button
+        mSettingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SensorActivity.this, SettingsActivity.class);
                 startActivity(intent);
             }
         });
