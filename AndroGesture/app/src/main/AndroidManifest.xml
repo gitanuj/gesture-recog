@@ -32,6 +32,9 @@
         <activity android:name=".SettingsActivity"
             android:theme="@style/Base.Theme.AppCompat.Light" />
 
+        <activity android:name=".EditGestureActivity"
+            android:theme="@style/Base.Theme.AppCompat.Light" />
+
     </application>
 
 </manifest>

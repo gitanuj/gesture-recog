@@ -22,31 +22,44 @@ public class SettingsActivity extends Activity {
 
     Button mEditButton;
 
+    String mSettingsString;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         settingsMap = new HashMap<>();
+        setContentView(R.layout.activity_settings);
+
+        mSettingsString = getIntent().getStringExtra("EDITED_SETTINGS");
+
+        if(mSettingsString != null) {
+            deserializeSettingsString();
+        } else {
+
+            //default settings
+            settingsMap.put("flip", "command|space");
+            settingsMap.put("right_left", "right");
+
+        }
+
+
 
         mEditButton = (Button) findViewById(R.id.edit_settings);
 
         //set listener for edit button to open up new edit page
-        mEditButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(SettingsActivity.this, EditGestureActivity.class);
+        if(mEditButton != null) {
+            mEditButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(SettingsActivity.this, EditGestureActivity.class);
 
-                //send the current settings to
-                intent.putExtra("CURRENT_SETTINGS", serializeSettingsMap());
-                startActivity(intent);
-            }
-        });
+                    //send the current settings to
+                    intent.putExtra("CURRENT_SETTINGS", serializeSettingsMap());
+                    startActivity(intent);
+                }
+            });
+        }
 
-        //default settings
-        settingsMap.put("flip", "command|space");
-        settingsMap.put("right_left", "right");
-
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_settings);
 
         init();
 
@@ -95,7 +108,7 @@ public class SettingsActivity extends Activity {
 
     //go through the table, get all of the gesture mappings, and store them as a String
     //string is formatted as follows: "gesture1,keymap1!gesture2,keymap2!gesture3,keymap3!..."
-    public String serializeSettingsMap() {
+    private String serializeSettingsMap() {
         StringBuilder sb = new StringBuilder();
 
         Iterator it = settingsMap.entrySet().iterator();
@@ -104,10 +117,26 @@ public class SettingsActivity extends Activity {
             String g = pair.getKey();
             String c = pair.getValue();
 
-            sb.append(g+","+c);
+            sb.append(g+","+c+"!");
         }
 
+        System.out.println("************" + sb.toString());
 
         return sb.toString();
+    }
+
+    private void deserializeSettingsString() {
+        if(mSettingsString == null)
+            return;
+
+        String[] tokens = mSettingsString.split("!");
+        for(int i = 0; i < tokens.length; i++) {
+            System.out.println("!!!!!!   " + tokens[i]);
+
+            String[] thisGesture = tokens[i].split(",");
+
+            settingsMap.put(thisGesture[0], thisGesture[1]);
+
+        }
     }
 }
