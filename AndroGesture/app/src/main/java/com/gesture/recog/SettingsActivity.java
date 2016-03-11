@@ -1,9 +1,11 @@
 package com.gesture.recog;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -18,10 +20,26 @@ import java.util.Map;
 public class SettingsActivity extends Activity {
     Map<String, String> settingsMap;
 
+    Button mEditButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        settingsMap = new HashMap<String, String>();
+        settingsMap = new HashMap<>();
+
+        mEditButton = (Button) findViewById(R.id.edit_settings);
+
+        //set listener for edit button to open up new edit page
+        mEditButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SettingsActivity.this, EditGestureActivity.class);
+
+                //send the current settings to
+                intent.putExtra("CURRENT_SETTINGS", serializeSettingsMap());
+                startActivity(intent);
+            }
+        });
 
         //default settings
         settingsMap.put("flip", "command|space");
@@ -31,6 +49,8 @@ public class SettingsActivity extends Activity {
         setContentView(R.layout.activity_settings);
 
         init();
+
+
     }
 
     //dynamically create settings table
@@ -75,24 +95,18 @@ public class SettingsActivity extends Activity {
 
     //go through the table, get all of the gesture mappings, and store them as a String
     //string is formatted as follows: "gesture1,keymap1!gesture2,keymap2!gesture3,keymap3!..."
-    public String serializeTable(TableLayout tableLayout) {
+    public String serializeSettingsMap() {
         StringBuilder sb = new StringBuilder();
 
-        for(int i = 0; i < tableLayout.getChildCount(); i++) {
-            View view = tableLayout.getChildAt(i);
-            if(view instanceof TableRow) {
-                //we have the setting and table now
-                TableRow row = (TableRow) view;
-                TextView firstTextView = (TextView) row.getChildAt(0);
-                TextView secondTextView = (TextView) row.getChildAt(1);
-                String gesture = firstTextView.getText().toString();
-                String keyboard = secondTextView.getText().toString();
+        Iterator it = settingsMap.entrySet().iterator();
+        while(it.hasNext()) {
+            Map.Entry<String, String> pair = (Map.Entry<String, String>)it.next();
+            String g = pair.getKey();
+            String c = pair.getValue();
 
-                //add it to the stringbuilder
-                sb.append(gesture + "," + keyboard);
-                sb.append("!");
-            }
+            sb.append(g+","+c);
         }
+
 
         return sb.toString();
     }
