@@ -22,7 +22,7 @@ import java.util.StringTokenizer;
  * Created by alickxu on 3/10/16.
  */
 public class EditGestureActivity extends Activity {
-    Map<String, String> settingsMap;
+    Map<String, String> settingsMap, initialSettingsMap;
 
     String mSettingsString;
 
@@ -34,6 +34,8 @@ public class EditGestureActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_edit_settings);
+
+        initialSettingsMap = new HashMap<>();
         settingsMap = new HashMap<>();
 
         mSettingsString = getIntent().getStringExtra("CURRENT_SETTINGS");
@@ -60,6 +62,11 @@ public class EditGestureActivity extends Activity {
             public void onClick(View v) {
                 Intent intent = new Intent(EditGestureActivity.this, SettingsActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                //send back the initial settingsMap
+                settingsMap = new HashMap<>();
+
+                intent.putExtra("EDITED_SETTINGS", serializeInitialSettingsMap());
                 startActivity(intent);
             }
         });
@@ -91,22 +98,22 @@ public class EditGestureActivity extends Activity {
 
             //make new table entry
             TableRow currRow = new TableRow(this);
-            EditText gesture = new EditText(this);
+            TextView gesture = new TextView(this);
             gesture.setText(pair.getKey());
-            gesture.setId(i);
-            i++;
+            gesture.setTag("g" + i);
             EditText command = new EditText(this);
             command.setText(pair.getValue());
-            command.setId(i);
-            i++;
+            command.setTag("c" + i);
 
             currRow.addView(gesture);
             currRow.addView(command);
 
+            
 
             //add table entry to table
             settingsTable.addView(currRow);
 
+            i++;
         }
     }
 
@@ -115,7 +122,23 @@ public class EditGestureActivity extends Activity {
     private String serializeSettingsMap() {
         StringBuilder sb = new StringBuilder();
 
-        Iterator it = settingsMap.entrySet().iterator();
+        for(int i = 0; i < settingsMap.size(); i++) {
+            TextView g = (TextView)findViewById(R.id.edit_settings_layout).findViewWithTag("g" + i);
+            EditText c = (EditText)findViewById(R.id.edit_settings_layout).findViewWithTag("c" + i);
+
+            if(g != null && c != null) {
+                sb.append(g.getText().toString() + "," + c.getText().toString() + "!");
+            }
+        }
+
+        return sb.toString();
+    }
+
+    //when user presses cancel button, call this method to return what the settingsmap was before
+    private String serializeInitialSettingsMap() {
+        StringBuilder sb = new StringBuilder();
+
+        Iterator it = initialSettingsMap.entrySet().iterator();
         while(it.hasNext()) {
             Map.Entry<String, String> pair = (Map.Entry<String, String>)it.next();
             String g = pair.getKey();
@@ -123,8 +146,6 @@ public class EditGestureActivity extends Activity {
 
             sb.append(g+","+c+"!");
         }
-
-        System.out.println("ASDFASDFASDFASDFASDFASDF" + sb.toString());
 
         return sb.toString();
     }
@@ -135,13 +156,11 @@ public class EditGestureActivity extends Activity {
 
         String[] tokens = mSettingsString.split("!");
         for(int i = 0; i < tokens.length; i++) {
-            System.out.println("!!!!!!   " + tokens[i]);
 
             String[] thisGesture = tokens[i].split(",");
 
             settingsMap.put(thisGesture[0], thisGesture[1]);
-
-
+            initialSettingsMap.put(thisGesture[0], thisGesture[1]);
         }
     }
 }
