@@ -18,31 +18,30 @@ import java.util.Map;
  * Created by alickxu on 3/9/16.
  */
 public class SettingsActivity extends Activity {
+    public static final String SERVER_IP = "SERVER_IP";
+    public static final String EDITED_SETTINGS = "EDITED_SETTINGS";
+    public static final String CURRENT_SETTINGS = "CURRENT_SETTINGS";
+
     Map<String, String> settingsMap;
 
     Button mEditButton;
 
     String mSettingsString;
 
+    private String mServerAddress;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        settingsMap = new HashMap<>();
+        settingsMap = SensorActivity.settingsMap;
         setContentView(R.layout.activity_settings);
 
-        mSettingsString = getIntent().getStringExtra("EDITED_SETTINGS");
+        mSettingsString = getIntent().getStringExtra(EDITED_SETTINGS);
+        mServerAddress = getIntent().getStringExtra(SERVER_IP);
 
         if(mSettingsString != null) {
             deserializeSettingsString();
-        } else {
-
-            //default settings
-            settingsMap.put("flip", "command|space");
-            settingsMap.put("right_left", "right");
-
         }
-
-
 
         mEditButton = (Button) findViewById(R.id.edit_settings);
 
@@ -54,16 +53,12 @@ public class SettingsActivity extends Activity {
                     Intent intent = new Intent(SettingsActivity.this, EditGestureActivity.class);
 
                     //send the current settings to
-                    intent.putExtra("CURRENT_SETTINGS", serializeSettingsMap());
+                    intent.putExtra(CURRENT_SETTINGS, serializeSettingsMap());
                     startActivity(intent);
                 }
             });
         }
-
-
         init();
-
-
     }
 
     //dynamically create settings table
@@ -99,11 +94,7 @@ public class SettingsActivity extends Activity {
 
             //add table entry to table
             settingsTable.addView(currRow);
-
         }
-
-
-
     }
 
     //go through the table, get all of the gesture mappings, and store them as a String
@@ -120,8 +111,6 @@ public class SettingsActivity extends Activity {
             sb.append(g+","+c+"!");
         }
 
-        System.out.println("************" + sb.toString());
-
         return sb.toString();
     }
 
@@ -131,12 +120,8 @@ public class SettingsActivity extends Activity {
 
         String[] tokens = mSettingsString.split("!");
         for(int i = 0; i < tokens.length; i++) {
-            System.out.println("!!!!!!   " + tokens[i]);
-
             String[] thisGesture = tokens[i].split(",");
-
             settingsMap.put(thisGesture[0], thisGesture[1]);
-
         }
     }
 }

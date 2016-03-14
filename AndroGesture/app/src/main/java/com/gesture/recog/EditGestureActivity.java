@@ -19,12 +19,14 @@ import android.widget.Toast;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 /**
  * Created by alickxu on 3/10/16.
  */
 public class EditGestureActivity extends Activity {
+
     Map<String, String> settingsMap, initialSettingsMap;
 
     String mSettingsString;
@@ -41,7 +43,7 @@ public class EditGestureActivity extends Activity {
         initialSettingsMap = new HashMap<>();
         settingsMap = new HashMap<>();
 
-        mSettingsString = getIntent().getStringExtra("CURRENT_SETTINGS");
+        mSettingsString = getIntent().getStringExtra(SettingsActivity.CURRENT_SETTINGS);
         mSaveButton = (Button) findViewById(R.id.save_edits);
         mCancelButton = (Button) findViewById(R.id.cancel_edits);
 
@@ -54,7 +56,7 @@ public class EditGestureActivity extends Activity {
             public void onClick(View v) {
                 Intent intent = new Intent(EditGestureActivity.this, SettingsActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.putExtra("EDITED_SETTINGS", serializeSettingsMap());
+                intent.putExtra(SettingsActivity.EDITED_SETTINGS, serializeSettingsMap());
                 startActivity(intent);
             }
         });
@@ -69,7 +71,7 @@ public class EditGestureActivity extends Activity {
                 //send back the initial settingsMap
                 settingsMap = new HashMap<>();
 
-                intent.putExtra("EDITED_SETTINGS", serializeInitialSettingsMap());
+                intent.putExtra(SettingsActivity.EDITED_SETTINGS, serializeInitialSettingsMap());
                 startActivity(intent);
             }
         });

@@ -11,10 +11,13 @@ import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class SensorActivity extends Activity implements HoldButton.HoldListener {
+    public static Map<String, String> settingsMap = new HashMap<>();
 
     public static final String SERVER_IP = "SERVER_IP";
 
@@ -77,6 +80,12 @@ public class SensorActivity extends Activity implements HoldButton.HoldListener 
         mText.setText("Connected to " + mServerAddress);
         mHoldButton.setHoldListener(this);
 
+
+        //default settings
+        settingsMap.put("flip", "command|space");
+        settingsMap.put("right_left", "right");
+        
+
         //set listener for keyboard button
         mKeyboardButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,6 +101,7 @@ public class SensorActivity extends Activity implements HoldButton.HoldListener 
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(SensorActivity.this, SettingsActivity.class);
+                intent.putExtra(SettingsActivity.SERVER_IP, mServerAddress);
                 startActivity(intent);
             }
         });
