@@ -17,7 +17,7 @@ public class PCGesture {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
             String inputLine;
-            while ((inputLine = bufferedReader.readLine()) != null) { 
+            while ((inputLine = bufferedReader.readLine()) != null) {
                 System.out.println(inputLine);
             }
         } catch (IOException e) {
