@@ -1,17 +1,20 @@
 package com.gesture.recog;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -105,10 +108,29 @@ public class EditGestureActivity extends Activity {
             command.setText(pair.getValue());
             command.setTag("c" + i);
 
+            //make delete button
+            Button deleteButton = new Button(this);
+            deleteButton.setText("Delete");
+
+            deleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override public void onClick(View v)
+                {
+                    // row is your row, the parent of the clicked button
+                    View row = (View) v.getParent();
+                    // container contains all the rows, you could keep a variable somewhere else to the container which you can refer to here
+                    ViewGroup container = ((ViewGroup)row.getParent());
+                    // delete the row and invalidate your view so it gets redrawn
+                    container.removeView(row);
+                    container.invalidate();
+
+                    Toast toast = Toast.makeText(getApplicationContext(), "Gesture Deleted!", Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+            });
+
             currRow.addView(gesture);
             currRow.addView(command);
-
-            
+            currRow.addView(deleteButton);
 
             //add table entry to table
             settingsTable.addView(currRow);
