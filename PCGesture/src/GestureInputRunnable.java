@@ -2,6 +2,7 @@ import com.fastdtw.timeseries.TimeSeries;
 
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.List;
 
 public class GestureInputRunnable implements Runnable {
 
@@ -31,7 +32,10 @@ public class GestureInputRunnable implements Runnable {
                     String data = Utils.readFully(socket.getInputStream());
                     TimeSeries timeSeries = Utils.dataToTimeSeries(data);
                     long start = System.currentTimeMillis();
-                    Classifier.getInstance().classify(timeSeries);
+                    List<Gesture> classes = Classifier.getInstance().knn(1, timeSeries);
+                    for (Gesture g : classes) {
+                        System.out.println(g);
+                    }
                     System.out.println("Time taken: " + (System.currentTimeMillis() - start));
                 } catch (Exception e) {
                     e.printStackTrace();

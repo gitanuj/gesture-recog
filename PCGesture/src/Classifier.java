@@ -7,8 +7,7 @@ import com.fastdtw.util.DistanceFunctionFactory;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -58,9 +57,9 @@ public class Classifier {
         gestures.add(gesture);
     }
 
-    public Gesture classify(TimeSeries timeSeries) throws Exception {
-        TimeWarpInfo result = null;
-        Gesture gesture = null;
+    public List<Gesture> knn(int k, TimeSeries timeSeries) throws Exception {
+        PriorityQueue<TimeWarpInfo> minHeap = new PriorityQueue<>(k, new TimeWarpDistanceComparator());
+        Map<TimeWarpInfo, Gesture> gestureMap = new HashMap<>();
         List<Future<TimeWarpInfo>> futures = new ArrayList<>();
 
         for (Gesture g : gestures) {
@@ -69,16 +68,15 @@ public class Classifier {
 
         for (int i = 0; i < gestures.size(); ++i) {
             TimeWarpInfo info = futures.get(i).get();
-            if (result == null || info.getDistance() < result.getDistance()) {
-                result = info;
-                gesture = gestures.get(i);
-            }
+            minHeap.add(info);
+            gestureMap.put(info, gestures.get(i));
         }
 
-        System.out.println(gesture);
-//        System.out.println(result);
-
-        return gesture;
+        List<Gesture> gestures = new ArrayList<>();
+        for (int i = 0; i < k; ++i) {
+            gestures.add(gestureMap.get(minHeap.poll()));
+        }
+        return gestures;
     }
 
     private class TestGesture implements Callable<TimeWarpInfo> {
@@ -102,6 +100,14 @@ public class Classifier {
                 }
             }
             return result;
+        }
+    }
+
+    private class TimeWarpDistanceComparator implements Comparator<TimeWarpInfo> {
+
+        @Override
+        public int compare(TimeWarpInfo first, TimeWarpInfo second) {
+            return (int) (first.getDistance() - second.getDistance());
         }
     }
 }
