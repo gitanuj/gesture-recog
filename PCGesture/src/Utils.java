@@ -1,10 +1,7 @@
 import com.fastdtw.timeseries.TimeSeries;
 import com.fastdtw.timeseries.TimeSeriesPoint;
 
-import java.io.BufferedReader;
-import java.io.Closeable;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.StringTokenizer;
 
 public class Utils {
@@ -42,6 +39,7 @@ public class Utils {
     }
 
     public static TimeSeries dataToTimeSeries(String data) {
+        data = data.trim();
         int count = 0;
         TimeSeries timeSeries = new TimeSeries(6);
         StringTokenizer tokenizer = new StringTokenizer(data, " ,");
@@ -54,5 +52,32 @@ public class Utils {
             count++;
         }
         return timeSeries;
+    }
+
+    public static Object readObjectFromFile(File file) {
+        ObjectInputStream ois = null;
+        Object result = null;
+        try {
+            ois = new ObjectInputStream(new FileInputStream(file));
+            result = ois.readObject();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            Utils.closeQuietly(ois);
+        }
+
+        return result;
+    }
+
+    public static void writeObjectToFile(File file, Object object) {
+        ObjectOutputStream oos = null;
+        try {
+            oos = new ObjectOutputStream(new FileOutputStream(file));
+            oos.writeObject(object);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            Utils.closeQuietly(oos);
+        }
     }
 }

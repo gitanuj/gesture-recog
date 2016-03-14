@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:gravity="center" />
+        android:text="Connected to 192.168.0.1" />
 
     <Button
         android:id="@+id/btn_keyboard"
@@ -26,5 +26,12 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:text="Hold to record gesture" />
+
+    <Button
+        android:id="@+id/btn_complete_training"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="50dp"
+        android:text="Complete training" />
 
 </LinearLayout>

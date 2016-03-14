@@ -1,33 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="0dp"
+    android:layout_margin="50dp"
     android:gravity="center"
-    android:orientation="vertical"
-    android:background="#1de9b6"
-    android:weightSum="1">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Gesture Control"
-        android:id="@+id/title"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="0.07"
-        android:textSize="30dp"
-        android:textAlignment="center"
-        android:textStyle="italic"
-        android:fontFamily="fantasy"/>
-
-    <ImageView
-        android:layout_width="94dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageView"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="0.32"
-        android:src="@drawable/hand"/>
+    android:orientation="vertical">
 
     <EditText
         android:id="@+id/et_server_address"
@@ -39,16 +16,6 @@
         android:id="@+id/btn_connect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
-        android:textColor="#1de9b6"
         android:text="Connect" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Enter inet address of Wifi to connect"
-        android:id="@+id/inet"
-        android:layout_weight="0.12"
-        android:paddingTop="10dp"/>
 
 </LinearLayout>

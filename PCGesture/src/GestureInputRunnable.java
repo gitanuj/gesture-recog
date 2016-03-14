@@ -1,6 +1,9 @@
 import com.fastdtw.timeseries.TimeSeries;
+import com.google.gson.Gson;
 
-import java.awt.event.KeyEvent;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -29,13 +32,7 @@ public class GestureInputRunnable implements Runnable {
             @Override
             public void run() {
                 try {
-                    String data = Utils.readFully(socket.getInputStream());
-                    TimeSeries timeSeries = Utils.dataToTimeSeries(data);
-                    long start = System.currentTimeMillis();
-                    Gesture g = Classifier.getInstance().knn(1, timeSeries);
-                    System.out.println(g);
-                    System.out.println("Time taken: " + (System.currentTimeMillis() - start));
-                    performAction(g);
+                    handleGestureData(new BufferedReader(new InputStreamReader(socket.getInputStream())));
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
@@ -47,15 +44,24 @@ public class GestureInputRunnable implements Runnable {
         Utils.startThreadWithName(runnable, "handle-gesture-input");
     }
 
-    private void performAction(Gesture g) {
-        String name = g.getName();
+    private void handleGestureData(Reader reader) throws Exception {
+        GestureData gestureData = new Gson().fromJson(reader, GestureData.class);
 
-        if (name.startsWith("flip")) {
-            Keyboard.getInstance().type(KeyEvent.VK_META, KeyEvent.VK_SPACE);
-        } else if (name.startsWith("right_left")) {
-            Keyboard.getInstance().type(KeyEvent.VK_RIGHT);
-        } else if (name.startsWith("top_down")) {
-            Keyboard.getInstance().type(KeyEvent.VK_SPACE);
+        if (gestureData.getName() == null) {
+            classify(gestureData);
+        } else {
+            train(gestureData);
         }
+    }
+
+    private void classify(GestureData gestureData) throws Exception {
+        TimeSeries timeSeries = Utils.dataToTimeSeries(gestureData.getValues());
+        Gesture gesture = Classifier.getInstance().knn(1, timeSeries);
+        System.out.println(gesture);
+        Keyboard.getInstance().type(gesture.getCommand());
+    }
+
+    private void train(GestureData gestureData) throws Exception {
+        Classifier.getInstance().addGesture(gestureData.getName(), gestureData.getCommand(), gestureData.getValues());
     }
 }

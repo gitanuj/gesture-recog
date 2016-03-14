@@ -7,6 +7,8 @@ public class Gesture {
 
     private String name;
 
+    private String command;
+
     private List<TimeSeries> timeSeries = new ArrayList<>();
 
     public Gesture(String name) {
@@ -15,6 +17,14 @@ public class Gesture {
 
     public String getName() {
         return name;
+    }
+
+    public void setCommand(String command) {
+        this.command = command;
+    }
+
+    public String getCommand() {
+        return command;
     }
 
     public List<TimeSeries> getTimeSeries() {

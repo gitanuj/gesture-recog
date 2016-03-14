@@ -4,9 +4,7 @@ import com.fastdtw.timeseries.TimeSeries;
 import com.fastdtw.util.DistanceFunction;
 import com.fastdtw.util.DistanceFunctionFactory;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -19,11 +17,15 @@ public class Classifier {
 
     private static final String DATA_DIRECTORY = "data";
 
+    private static final String CONFIG_FILE = "config-file";
+
     private static final int DTW_SEARCH_RADIUS = 10;
 
     private static final DistanceFunction DISTANCE_FUNCTION = DistanceFunctionFactory.getDistFnByName("EuclideanDistance");
 
     private ExecutorService executorService = Executors.newFixedThreadPool(4);
+
+    private Map<String, String> gestureCommandMap = new HashMap<>();
 
     private List<Gesture> gestures = new ArrayList<>();
 
@@ -33,9 +35,17 @@ public class Classifier {
     }
 
     public void init() throws Exception {
+        Map map = (Map) Utils.readObjectFromFile(new File(DATA_DIRECTORY, CONFIG_FILE));
+        if (map != null) {
+            gestureCommandMap = map;
+        }
+
+        data.mkdirs();
+
         for (File file : data.listFiles()) {
-            if (file.isFile() && !file.isHidden()) {
-                addGesture(file);
+            if (file.isFile() && !file.isHidden() && !file.getName().equals(CONFIG_FILE)) {
+                String name = file.getName();
+                addGestureInMem(name, gestureCommandMap.get(name), new BufferedReader(new InputStreamReader(new FileInputStream(file))));
             }
         }
     }
@@ -44,17 +54,33 @@ public class Classifier {
         return INSTANCE;
     }
 
-    private void addGesture(File file) throws Exception {
-        System.out.println("Adding " + file);
+    private void addGestureInMem(String name, String command, BufferedReader reader) throws Exception {
+        System.out.println("Adding in mem:  " + name);
 
-        Gesture gesture = new Gesture(file.getName());
-        BufferedReader reader = new BufferedReader(new FileReader(file));
-        List<TimeSeries> timeSeriesList = gesture.getTimeSeries();
+        Gesture gesture = new Gesture(name);
+        gesture.setCommand(command);
         String line;
         while ((line = reader.readLine()) != null) {
-            timeSeriesList.add(Utils.dataToTimeSeries(line));
+            gesture.getTimeSeries().add(Utils.dataToTimeSeries(line));
         }
         gestures.add(gesture);
+    }
+
+    public void addGesture(String name, String command, String values) throws Exception {
+        System.out.println("Storing on disk: " + name);
+
+        // Write values to file
+        File file = new File(DATA_DIRECTORY, name);
+        FileWriter writer = new FileWriter(file, false);
+        writer.write(values);
+        Utils.closeQuietly(writer);
+
+        // Add command to config
+        gestureCommandMap.put(name, command);
+        Utils.writeObjectToFile(new File(DATA_DIRECTORY, CONFIG_FILE), gestureCommandMap);
+
+        // Add gesture to in-memory structure
+        addGestureInMem(name, command, new BufferedReader(new StringReader(values)));
     }
 
     public Gesture knn(int k, TimeSeries timeSeries) throws Exception {
