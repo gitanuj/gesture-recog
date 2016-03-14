@@ -1,0 +1,14 @@
+ABSTRACT
+INTRODUCTION
+BACKGROUND
+	- Calculating distance between time series data
+	- Classifier
+SOLUTION
+	- DTW
+	- FastDTW
+	- 1NN
+	- Parallel
+EVALUATION
+	
+CONCLUSION
+REFERENCES
