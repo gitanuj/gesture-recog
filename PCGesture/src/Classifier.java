@@ -23,7 +23,7 @@ public class Classifier {
 
     private static final DistanceFunction DISTANCE_FUNCTION = DistanceFunctionFactory.getDistFnByName("EuclideanDistance");
 
-    private ExecutorService executorService = Executors.newFixedThreadPool(3);
+    private ExecutorService executorService = Executors.newFixedThreadPool(4);
 
     private List<Gesture> gestures = new ArrayList<>();
 
@@ -57,49 +57,63 @@ public class Classifier {
         gestures.add(gesture);
     }
 
-    public List<Gesture> knn(int k, TimeSeries timeSeries) throws Exception {
+    public Gesture knn(int k, TimeSeries timeSeries) throws Exception {
         PriorityQueue<TimeWarpInfo> minHeap = new PriorityQueue<>(k, new TimeWarpDistanceComparator());
+        Map<Future<TimeWarpInfo>, Gesture> futureMap = new HashMap<>();
         Map<TimeWarpInfo, Gesture> gestureMap = new HashMap<>();
-        List<Future<TimeWarpInfo>> futures = new ArrayList<>();
 
         for (Gesture g : gestures) {
-            futures.add(executorService.submit(new TestGesture(g, timeSeries)));
+            for (TimeSeries base : g.getTimeSeries()) {
+                Future<TimeWarpInfo> f = executorService.submit(new TestGesture(base, timeSeries));
+                futureMap.put(f, g);
+            }
         }
 
-        for (int i = 0; i < gestures.size(); ++i) {
-            TimeWarpInfo info = futures.get(i).get();
+        for (Future<TimeWarpInfo> f : futureMap.keySet()) {
+            TimeWarpInfo info = f.get();
             minHeap.add(info);
-            gestureMap.put(info, gestures.get(i));
+            gestureMap.put(info, futureMap.get(f));
         }
 
-        List<Gesture> gestures = new ArrayList<>();
+        // Count
+        Map<Gesture, Integer> countMap = new HashMap<>();
         for (int i = 0; i < k; ++i) {
-            gestures.add(gestureMap.get(minHeap.poll()));
+            Gesture g = gestureMap.get(minHeap.poll());
+            if (!countMap.containsKey(g)) {
+                countMap.put(g, 0);
+            }
+            int currCount = countMap.get(g);
+            countMap.put(g, currCount + 1);
         }
-        return gestures;
+
+        // Find max
+        Gesture result = null;
+        int max = Integer.MIN_VALUE;
+        for (Gesture g : countMap.keySet()) {
+            int count = countMap.get(g);
+            if (count > max) {
+                max = count;
+                result = g;
+            }
+        }
+
+        return result;
     }
 
     private class TestGesture implements Callable<TimeWarpInfo> {
 
-        private Gesture gesture;
+        private TimeSeries t1;
 
-        private TimeSeries timeSeries;
+        private TimeSeries t2;
 
-        public TestGesture(Gesture gesture, TimeSeries timeSeries) {
-            this.gesture = gesture;
-            this.timeSeries = timeSeries;
+        public TestGesture(TimeSeries t1, TimeSeries t2) {
+            this.t1 = t1;
+            this.t2 = t2;
         }
 
         @Override
         public TimeWarpInfo call() throws Exception {
-            TimeWarpInfo result = null;
-            for (TimeSeries base : gesture.getTimeSeries()) {
-                TimeWarpInfo info = FastDTW.getWarpInfoBetween(base, timeSeries, DTW_SEARCH_RADIUS, DISTANCE_FUNCTION);
-                if (result == null || info.getDistance() < result.getDistance()) {
-                    result = info;
-                }
-            }
-            return result;
+            return FastDTW.getWarpInfoBetween(t1, t2, DTW_SEARCH_RADIUS, DISTANCE_FUNCTION);
         }
     }
 
