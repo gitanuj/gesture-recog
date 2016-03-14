@@ -10,7 +10,6 @@ public class PCGesture {
         } catch (Exception e) {
             System.out.println("Failed to init classifier");
             e.printStackTrace();
-            return;
         }
 
         Utils.startThreadWithName(new KeyboardInputRunnable(KEYBOARD_PORT), "keyboard-input");
