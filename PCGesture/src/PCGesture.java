@@ -1,27 +1,19 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
-
 public class PCGesture {
 
-    private static final int PORT = 8888;
+    private static final int GESTURE_PORT = 8888;
+
+    private static final int KEYBOARD_PORT = 8800;
 
     public static void main(String[] args) {
-
         try {
-            ServerSocket serverSocket = new ServerSocket(PORT);
-            Socket clientSocket = serverSocket.accept();
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-
-            String inputLine;
-            while ((inputLine = bufferedReader.readLine()) != null) {
-                System.out.println(inputLine);
-            }
-        } catch (IOException e) {
+            Classifier.getInstance().init();
+        } catch (Exception e) {
+            System.out.println("Failed to init classifier");
             e.printStackTrace();
+            return;
         }
+
+        Utils.startThreadWithName(new KeyboardInputRunnable(KEYBOARD_PORT), "keyboard-input");
+        Utils.startThreadWithName(new GestureInputRunnable(GESTURE_PORT), "gesture-input");
     }
 }
