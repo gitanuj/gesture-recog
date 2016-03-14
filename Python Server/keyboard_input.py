@@ -6,7 +6,7 @@ PORT = 8800
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind((HOST, PORT))
-s.listen(0)
+s.listen(1)
 
 # returns a raw dump of recorded data from phone (comma separated)
 def record_keyboard_data():
