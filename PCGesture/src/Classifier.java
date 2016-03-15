@@ -83,6 +83,37 @@ public class Classifier {
         addGestureInMem(name, command, new BufferedReader(new StringReader(values)));
     }
 
+    public void updateGestureCommandMap(Map<String, String> map) {
+        List<String> toRemove = new ArrayList<>();
+
+        for (String name : gestureCommandMap.keySet()) {
+            if (map.containsKey(name)) {
+                gestureCommandMap.put(name, map.get(name));
+            } else {
+                toRemove.add(name);
+            }
+        }
+
+        for (String name : toRemove) {
+            new File(DATA_DIRECTORY, name).delete();
+            gestureCommandMap.remove(name);
+            Iterator<Gesture> iterator = gestures.iterator();
+            while (iterator.hasNext()) {
+                if (iterator.next().getName().equals(name)) {
+                    iterator.remove();
+                }
+            }
+        }
+
+        if (toRemove.size() > 0) {
+            Utils.writeMapToFile(new File(DATA_DIRECTORY, CONFIG_FILE), gestureCommandMap);
+        }
+    }
+
+    public Map<String, String> getGestureCommandMap() {
+        return gestureCommandMap;
+    }
+
     public Gesture knn(int k, TimeSeries timeSeries) throws Exception {
         PriorityQueue<TimeWarpInfo> minHeap = new PriorityQueue<>(k, new TimeWarpDistanceComparator());
         Map<Future<TimeWarpInfo>, Gesture> futureMap = new HashMap<>();

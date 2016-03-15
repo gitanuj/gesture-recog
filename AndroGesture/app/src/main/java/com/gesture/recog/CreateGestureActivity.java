@@ -1,6 +1,7 @@
 package com.gesture.recog;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
@@ -60,8 +61,10 @@ public class CreateGestureActivity extends SensorActivity implements HoldButton.
 
         if (count >= RECORDED_COUNT) {
             // Done
+            Intent result = new Intent();
+            result.putExtra("gesture", new Gesture(mGestureName, mGestureCmd));
             sendData(mGestureName, mGestureCmd);
-            setResult(Activity.RESULT_OK);
+            setResult(Activity.RESULT_OK, result);
             finish();
         }
     }

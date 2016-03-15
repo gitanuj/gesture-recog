@@ -36,6 +36,10 @@
             android:label="Send keys"
             android:windowSoftInputMode="stateVisible" />
 
+        <activity
+            android:name=".GestureListActivity"
+            android:label="Gestures" />
+
     </application>
 
 </manifest>

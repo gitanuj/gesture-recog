@@ -59,12 +59,22 @@ public class Utils {
         return timeSeries;
     }
 
-    public static void writeMapToFile(File file, Map<String, String> map) {
+    public static JsonObject mapToJsonObject(Map<String, String> map) {
         JsonObject jsonObject = new JsonObject();
         for (String key : map.keySet()) {
             jsonObject.addProperty(key, map.get(key));
         }
+        return jsonObject;
+    }
 
+    public static Map<String, String> jsonStringToMap(String jsonString) {
+        Type type = new TypeToken<Map<String, String>>() {
+        }.getType();
+        return new Gson().fromJson(jsonString, type);
+    }
+
+    public static void writeMapToFile(File file, Map<String, String> map) {
+        JsonObject jsonObject = mapToJsonObject(map);
         PrintWriter writer = null;
         try {
             writer = new PrintWriter(new FileWriter(file));
@@ -79,10 +89,8 @@ public class Utils {
 
     public static Map<String, String> readMapFromFile(File file) {
         try {
-            String jsonString = readFully(new BufferedInputStream(new FileInputStream(file)));
-            Type type = new TypeToken<Map<String, String>>() {
-            }.getType();
-            return new Gson().fromJson(jsonString, type);
+            String jsonString = readFully(new FileInputStream(file));
+            return jsonStringToMap(jsonString);
         } catch (Exception e) {
             e.printStackTrace();
         }
