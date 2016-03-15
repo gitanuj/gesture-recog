@@ -5,18 +5,28 @@
     android:orientation="vertical"
     android:padding="5dp">
 
-    <EditText
-        android:id="@+id/et_gesture_name"
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:hint="Name" />
+        android:layout_margin="5dp">
 
-    <EditText
-        android:id="@+id/et_gesture_command"
+        <EditText
+            android:id="@+id/et_gesture_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Name" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:hint="Command" />
+        android:layout_margin="5dp">
+
+        <EditText
+            android:id="@+id/et_gesture_command"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Command" />
+    </android.support.design.widget.TextInputLayout>
 
 </LinearLayout>

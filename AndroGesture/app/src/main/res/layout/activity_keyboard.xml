@@ -13,8 +13,8 @@
         android:text="Connected to 192.168.0.1"
         android:textColor="@android:color/white" />
 
-    <EditText
-        android:id="@+id/et_input"
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/et_input_parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_text"
@@ -22,14 +22,21 @@
         android:layout_marginLeft="40dp"
         android:layout_marginRight="40dp"
         android:layout_marginTop="20dp"
-        android:gravity="center_horizontal"
-        android:singleLine="true" />
+        android:gravity="center_horizontal">
+
+        <EditText
+            android:id="@+id/et_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Type here"
+            android:singleLine="true" />
+    </android.support.design.widget.TextInputLayout>
 
     <Button
         android:id="@+id/btn_send"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/et_input"
+        android:layout_below="@id/et_input_parent"
         android:layout_centerHorizontal="true"
         android:text="Send" />
 
