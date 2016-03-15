@@ -1,7 +1,12 @@
 import com.fastdtw.timeseries.TimeSeries;
 import com.fastdtw.timeseries.TimeSeriesPoint;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.*;
+import java.lang.reflect.Type;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 public class Utils {
@@ -54,30 +59,33 @@ public class Utils {
         return timeSeries;
     }
 
-    public static Object readObjectFromFile(File file) {
-        ObjectInputStream ois = null;
-        Object result = null;
+    public static void writeMapToFile(File file, Map<String, String> map) {
+        JsonObject jsonObject = new JsonObject();
+        for (String key : map.keySet()) {
+            jsonObject.addProperty(key, map.get(key));
+        }
+
+        PrintWriter writer = null;
         try {
-            ois = new ObjectInputStream(new FileInputStream(file));
-            result = ois.readObject();
+            writer = new PrintWriter(new FileWriter(file));
+            writer.write(jsonObject.toString());
+            writer.flush();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            Utils.closeQuietly(ois);
+            Utils.closeQuietly(writer);
         }
-
-        return result;
     }
 
-    public static void writeObjectToFile(File file, Object object) {
-        ObjectOutputStream oos = null;
+    public static Map<String, String> readMapFromFile(File file) {
         try {
-            oos = new ObjectOutputStream(new FileOutputStream(file));
-            oos.writeObject(object);
+            String jsonString = readFully(new BufferedInputStream(new FileInputStream(file)));
+            Type type = new TypeToken<Map<String, String>>() {
+            }.getType();
+            return new Gson().fromJson(jsonString, type);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            Utils.closeQuietly(oos);
         }
+        return null;
     }
 }

@@ -35,7 +35,7 @@ public class Classifier {
     }
 
     public void init() throws Exception {
-        Map map = (Map) Utils.readObjectFromFile(new File(DATA_DIRECTORY, CONFIG_FILE));
+        Map map = (Map) Utils.readMapFromFile(new File(DATA_DIRECTORY, CONFIG_FILE));
         if (map != null) {
             gestureCommandMap = map;
         }
@@ -77,7 +77,7 @@ public class Classifier {
 
         // Add command to config
         gestureCommandMap.put(name, command);
-        Utils.writeObjectToFile(new File(DATA_DIRECTORY, CONFIG_FILE), gestureCommandMap);
+        Utils.writeMapToFile(new File(DATA_DIRECTORY, CONFIG_FILE), gestureCommandMap);
 
         // Add gesture to in-memory structure
         addGestureInMem(name, command, new BufferedReader(new StringReader(values)));
