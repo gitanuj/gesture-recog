@@ -1,14 +1,11 @@
 package com.gesture.recog;
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.Build;
+import android.support.v7.widget.AppCompatButton;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.View;
-import android.widget.Button;
 
-public class HoldButton extends Button {
+public class HoldButton extends AppCompatButton {
 
     public interface HoldListener {
 
@@ -33,11 +30,6 @@ public class HoldButton extends Button {
 
     public void setHoldListener(HoldListener holdListener) {
         mListener = holdListener;
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public HoldButton(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
     }
 
     @Override

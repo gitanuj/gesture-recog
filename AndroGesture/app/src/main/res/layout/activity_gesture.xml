@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/coordinator"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:keepScreenOn="true">
+
+    <TextView
+        android:id="@+id/tv_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/darker_gray"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="@string/connected_to"
+        android:textColor="@android:color/white" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btn_keyboard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="200dp"
+            android:text="Send keys" />
+
+        <com.gesture.recog.HoldButton
+            android:id="@+id/hb_hold_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:minHeight="200dp"
+            android:minWidth="200dp"
+            android:text="Hold" />
+
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_add_white_24dp" />
+</android.support.design.widget.CoordinatorLayout>

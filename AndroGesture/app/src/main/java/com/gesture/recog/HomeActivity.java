@@ -1,12 +1,13 @@
 package com.gesture.recog;
 
-import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class HomeActivity extends Activity implements View.OnClickListener {
+public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText mEditText;
 
@@ -28,6 +29,7 @@ public class HomeActivity extends Activity implements View.OnClickListener {
         String serverAddress = mEditText.getText().toString();
         Bundle bundle = new Bundle();
         bundle.putString(SensorActivity.SERVER_IP, serverAddress);
-        Utils.launchActivity(this, OptionActivity.class, bundle);
+        Intent intent = Utils.buildLaunchIntent(this, GestureActivity.class, bundle);
+        startActivity(intent);
     }
 }

@@ -1,10 +1,9 @@
 package com.gesture.recog;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
+import android.os.Handler;
+import android.os.Looper;
+import android.support.v7.app.AppCompatActivity;
 
 import org.json.JSONObject;
 
@@ -14,15 +13,13 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class SensorActivity extends Activity implements HoldButton.HoldListener, View.OnClickListener {
+public abstract class SensorActivity extends AppCompatActivity {
 
     public static final String SERVER_IP = "SERVER_IP";
 
-    public static final String GESTURE_NAME = "GESTURE_NAME";
-
-    public static final String GESTURE_COMMAND = "GESTURE_COMMAND";
-
     private static final int PORT = 8888;
+
+    private Handler mHandler = new Handler(Looper.getMainLooper());
 
     private ExecutorService mExecutorService = Executors.newSingleThreadExecutor();
 
@@ -38,23 +35,11 @@ public class SensorActivity extends Activity implements HoldButton.HoldListener,
 
     private float zRotation;
 
-    private String mServerAddress;
-
-    private String mGestureName;
-
-    private String mGestureCommand;
-
     private Sender mSender;
 
-    private TextView mText;
+    private StringBuilder mRecordedValues = new StringBuilder();
 
-    private HoldButton mHoldButton;
-
-    private Button mKeyboardButton;
-
-    private Button mCompleteTraining;
-
-    private StringBuilder mRecordedValues;
+    protected String mServerAddress;
 
     private AccelerationListener mAccelerationListener = new AccelerationListener() {
         @Override
@@ -77,54 +62,8 @@ public class SensorActivity extends Activity implements HoldButton.HoldListener,
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sensor);
-
-        mText = (TextView) findViewById(R.id.tv_text);
-        mHoldButton = (HoldButton) findViewById(R.id.hb_hold_button);
-        mKeyboardButton = (Button) findViewById(R.id.btn_keyboard);
-        mCompleteTraining = (Button) findViewById(R.id.btn_complete_training);
 
         mServerAddress = getIntent().getStringExtra(SERVER_IP);
-        mGestureName = getIntent().getStringExtra(GESTURE_NAME);
-        mGestureCommand = getIntent().getStringExtra(GESTURE_COMMAND);
-
-        mText.setText("Connected to " + mServerAddress);
-        mHoldButton.setHoldListener(this);
-        mKeyboardButton.setOnClickListener(this);
-        mCompleteTraining.setOnClickListener(this);
-
-        mRecordedValues = new StringBuilder();
-
-        if (mGestureName == null) {
-            onGestureUseMode();
-        } else {
-            onTrainingMode();
-        }
-    }
-
-    private void onTrainingMode() {
-        mKeyboardButton.setVisibility(View.GONE);
-        mCompleteTraining.setVisibility(View.VISIBLE);
-    }
-
-    private void onGestureUseMode() {
-        mKeyboardButton.setVisibility(View.VISIBLE);
-        mCompleteTraining.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_keyboard:
-                Bundle bundle = new Bundle();
-                bundle.putString(SERVER_IP, mServerAddress);
-                Utils.launchActivity(this, KeyboardActivity.class, bundle);
-                break;
-            case R.id.btn_complete_training:
-                sendData(false);
-                finish();
-                break;
-        }
     }
 
     @Override
@@ -142,28 +81,24 @@ public class SensorActivity extends Activity implements HoldButton.HoldListener,
         AccelerationMonitor.getInstance().unregister(mAccelerationListener);
         RotationMonitor.getInstance().unregister(mRotationListener);
 
-        releaseSender();
+        stopRecording();
     }
 
-    @Override
-    public void onHoldDown() {
+    public void startRecording() {
         mSender = new Sender();
         mExecutorService.submit(mSender);
     }
 
-    @Override
-    public void onRelease() {
-        releaseSender();
-    }
-
-    private void releaseSender() {
+    public void stopRecording() {
         if (mSender != null) {
             mSender.cancel();
             mSender = null;
         }
     }
 
-    private void sendData(boolean sync) {
+    public abstract void onRecordingFinished();
+
+    public void sendData(final String gestureName, final String gestureCmd) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -173,8 +108,8 @@ public class SensorActivity extends Activity implements HoldButton.HoldListener,
 
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("values", mRecordedValues.toString());
-                    jsonObject.put("name", mGestureName);
-                    jsonObject.put("command", mGestureCommand);
+                    jsonObject.put("name", gestureName);
+                    jsonObject.put("command", gestureCmd);
 
                     mRecordedValues = new StringBuilder();
 
@@ -189,11 +124,7 @@ public class SensorActivity extends Activity implements HoldButton.HoldListener,
             }
         };
 
-        if (sync) {
-            runnable.run();
-        } else {
-            mExecutorService.submit(runnable);
-        }
+        mExecutorService.submit(runnable);
     }
 
     private class Sender implements Runnable {
@@ -213,13 +144,16 @@ public class SensorActivity extends Activity implements HoldButton.HoldListener,
                     Thread.sleep(2);
                 }
                 mRecordedValues.append("\n");
-
-                if (mGestureName == null) {
-                    sendData(true);
-                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    onRecordingFinished();
+                }
+            });
         }
     }
 }

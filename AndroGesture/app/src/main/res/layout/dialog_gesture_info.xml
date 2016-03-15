@@ -2,20 +2,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
     android:orientation="vertical"
-    android:padding="15dp">
+    android:padding="5dp">
 
     <EditText
         android:id="@+id/et_gesture_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="5dp"
         android:hint="Name" />
 
     <EditText
         android:id="@+id/et_gesture_command"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="5dp"
         android:hint="Command" />
 
 </LinearLayout>
