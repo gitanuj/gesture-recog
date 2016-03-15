@@ -20,15 +20,11 @@ public class GestureActivity extends SensorActivity implements HoldButton.HoldLi
 
     private static final int CREATE_GESTURE_REQUEST_CODE = 1;
 
-    private TextView mText;
-
     private Button mKeyboardBtn;
 
     private HoldButton mHoldButton;
 
     private FloatingActionButton mFAB;
-
-    private CoordinatorLayout mCoordinator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,11 +34,7 @@ public class GestureActivity extends SensorActivity implements HoldButton.HoldLi
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
-
-        mCoordinator = (CoordinatorLayout) findViewById(R.id.coordinator);
-
-        mText = (TextView) findViewById(R.id.tv_text);
-        mText.setText(getString(R.string.connected_to, mServerAddress));
+        actionBar.setSubtitle(getString(R.string.connected_to, mServerAddress));
 
         mHoldButton = ((HoldButton) findViewById(R.id.hb_hold_button));
         mHoldButton.setHoldListener(this);

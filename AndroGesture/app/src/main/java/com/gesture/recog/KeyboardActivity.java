@@ -28,8 +28,6 @@ public class KeyboardActivity extends AppCompatActivity implements View.OnClickL
 
     private String mServerAddress;
 
-    private TextView mText;
-
     private EditText mKeyboardInput;
 
     private Button mSendButton;
@@ -39,14 +37,12 @@ public class KeyboardActivity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_keyboard);
 
+        mServerAddress = getIntent().getStringExtra(SERVER_IP);
+
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
-
-        mServerAddress = getIntent().getStringExtra(SERVER_IP);
-
-        mText = (TextView) findViewById(R.id.tv_text);
-        mText.setText(getString(R.string.connected_to, mServerAddress));
+        actionBar.setSubtitle(getString(R.string.connected_to, mServerAddress));
 
         mKeyboardInput = (EditText) findViewById(R.id.et_input);
         mKeyboardInput.setOnEditorActionListener(

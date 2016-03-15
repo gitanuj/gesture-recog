@@ -14,8 +14,6 @@ public class CreateGestureActivity extends SensorActivity implements HoldButton.
 
     private static final int RECORDED_COUNT = 5;
 
-    private TextView mText;
-
     private TextView mRecordedCounter;
 
     private HoldButton mHoldButton;
@@ -34,9 +32,7 @@ public class CreateGestureActivity extends SensorActivity implements HoldButton.
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
-
-        mText = (TextView) findViewById(R.id.tv_text);
-        mText.setText(getString(R.string.connected_to, mServerAddress));
+        actionBar.setSubtitle(getString(R.string.connected_to, mServerAddress));
 
         mRecordedCounter = (TextView) findViewById(R.id.tv_recorded_counter);
 
