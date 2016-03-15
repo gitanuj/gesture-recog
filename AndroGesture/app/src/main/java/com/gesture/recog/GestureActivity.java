@@ -24,7 +24,7 @@ public class GestureActivity extends SensorActivity implements HoldButton.HoldLi
 
     private HoldButton mHoldButton;
 
-    private FloatingActionButton mFAB;
+    private FloatingActionButton mFAB, mSettingsFAB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +42,8 @@ public class GestureActivity extends SensorActivity implements HoldButton.HoldLi
         mKeyboardBtn.setOnClickListener(this);
         mFAB = (FloatingActionButton) findViewById(R.id.fab);
         mFAB.setOnClickListener(this);
+        mSettingsFAB = (FloatingActionButton) findViewById(R.id.settings_fab);
+        mSettingsFAB.setOnClickListener(this);
     }
 
     @Override
@@ -66,6 +68,11 @@ public class GestureActivity extends SensorActivity implements HoldButton.HoldLi
             case R.id.fab:
                 trainGestures();
                 break;
+            case R.id.settings_fab:
+                Bundle bundle1 = new Bundle();
+                bundle1.putString(SensorActivity.SERVER_IP, mServerAddress);
+                Intent intent1 = Utils.buildLaunchIntent(this, SettingsActivity.class, bundle1);
+                startActivity(intent1);
         }
     }
 

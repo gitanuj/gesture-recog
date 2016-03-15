@@ -9,7 +9,7 @@ public class Keyboard {
 
     private static final Keyboard INSTANCE = new Keyboard();
 
-    private static final Map<String, Integer> KEY_MAP = new HashMap<>();
+    private static final Map<String, Integer> KEY_MAP = new HashMap<String, Integer>();
 
     static {
         KEY_MAP.put("cmd", KeyEvent.VK_META);
@@ -43,7 +43,7 @@ public class Keyboard {
     }
 
     public void type(String command) {
-        java.util.List<Integer> keyEvents = new ArrayList<>();
+        java.util.List<Integer> keyEvents = new ArrayList<Integer>();
 
         StringTokenizer stringTokenizer = new StringTokenizer(command, " ");
         while (stringTokenizer.hasMoreTokens()) {

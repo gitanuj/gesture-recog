@@ -25,15 +25,19 @@ public class Classifier {
 
     private ExecutorService executorService = Executors.newFixedThreadPool(4);
 
-    private Map<String, String> gestureCommandMap = new HashMap<>();
+    private Map<String, String> gestureCommandMap = new HashMap<String, String>();
 
-    private List<Gesture> gestures = new ArrayList<>();
+    private List<Gesture> gestures = new ArrayList<Gesture>();
 
     private File data = new File(DATA_DIRECTORY);
 
     private Classifier() {
     }
 
+    public Map<String, String> getCommandMap() {
+    	return gestureCommandMap;
+    }
+    
     public void init() throws Exception {
         Map map = (Map) Utils.readMapFromFile(new File(DATA_DIRECTORY, CONFIG_FILE));
         if (map != null) {
@@ -84,9 +88,9 @@ public class Classifier {
     }
 
     public Gesture knn(int k, TimeSeries timeSeries) throws Exception {
-        PriorityQueue<TimeWarpInfo> minHeap = new PriorityQueue<>(k, new TimeWarpDistanceComparator());
-        Map<Future<TimeWarpInfo>, Gesture> futureMap = new HashMap<>();
-        Map<TimeWarpInfo, Gesture> gestureMap = new HashMap<>();
+        PriorityQueue<TimeWarpInfo> minHeap = new PriorityQueue<TimeWarpInfo>(k, new TimeWarpDistanceComparator());
+        Map<Future<TimeWarpInfo>, Gesture> futureMap = new HashMap<Future<TimeWarpInfo>, Gesture>();
+        Map<TimeWarpInfo, Gesture> gestureMap = new HashMap<TimeWarpInfo, Gesture>();
 
         for (Gesture g : gestures) {
             for (TimeSeries base : g.getTimeSeries()) {
@@ -102,7 +106,7 @@ public class Classifier {
         }
 
         // Count
-        Map<Gesture, Integer> countMap = new HashMap<>();
+        Map<Gesture, Integer> countMap = new HashMap<Gesture, Integer>();
         for (int i = 0; i < k; ++i) {
             Gesture g = gestureMap.get(minHeap.poll());
             if (!countMap.containsKey(g)) {

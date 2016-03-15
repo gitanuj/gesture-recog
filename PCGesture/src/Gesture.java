@@ -9,7 +9,7 @@ public class Gesture {
 
     private String command;
 
-    private List<TimeSeries> timeSeries = new ArrayList<>();
+    private List<TimeSeries> timeSeries = new ArrayList<TimeSeries>();
 
     public Gesture(String name) {
         this.name = name;
