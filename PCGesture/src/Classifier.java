@@ -84,13 +84,24 @@ public class Classifier {
     }
 
     public void updateGestureCommandMap(Map<String, String> map) {
+        List<String> toUpdate = new ArrayList<>();
         List<String> toRemove = new ArrayList<>();
 
         for (String name : gestureCommandMap.keySet()) {
             if (map.containsKey(name)) {
-                gestureCommandMap.put(name, map.get(name));
+                toUpdate.add(name);
             } else {
                 toRemove.add(name);
+            }
+        }
+
+        for (String name : toUpdate) {
+            String cmd = map.get(name);
+            gestureCommandMap.put(name, cmd);
+            for (Gesture gesture : gestures) {
+                if (gesture.getName().equals(name)) {
+                    gesture.setCommand(cmd);
+                }
             }
         }
 
@@ -105,9 +116,7 @@ public class Classifier {
             }
         }
 
-        if (toRemove.size() > 0) {
-            Utils.writeMapToFile(new File(DATA_DIRECTORY, CONFIG_FILE), gestureCommandMap);
-        }
+        Utils.writeMapToFile(new File(DATA_DIRECTORY, CONFIG_FILE), gestureCommandMap);
     }
 
     public Map<String, String> getGestureCommandMap() {
