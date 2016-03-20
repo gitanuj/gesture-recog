@@ -33,3 +33,5 @@ captures/
 
 # Idea config folder
 .idea/
+
+out/
