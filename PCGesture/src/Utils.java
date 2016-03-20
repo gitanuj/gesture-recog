@@ -89,8 +89,10 @@ public class Utils {
 
     public static Map<String, String> readMapFromFile(File file) {
         try {
-            String jsonString = readFully(new FileInputStream(file));
-            return jsonStringToMap(jsonString);
+            if (file.exists()) {
+                String jsonString = readFully(new FileInputStream(file));
+                return jsonStringToMap(jsonString);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

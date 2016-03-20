@@ -35,12 +35,12 @@ public class Classifier {
     }
 
     public void init() throws Exception {
+        data.mkdirs();
+        
         Map map = (Map) Utils.readMapFromFile(new File(DATA_DIRECTORY, CONFIG_FILE));
         if (map != null) {
             gestureCommandMap = map;
         }
-
-        data.mkdirs();
 
         for (File file : data.listFiles()) {
             if (file.isFile() && !file.isHidden() && !file.getName().equals(CONFIG_FILE)) {
