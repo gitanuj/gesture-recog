@@ -12,10 +12,11 @@ Team Members:
 
 `PCGesture` contains all the source and binaries for the PC application. It is written in Java.
 
-`AndroGesture` contains all the Android application.
+`AndroGesture` contains the Android application.
 
 You need to have JRE installed on your PC to run the PC application. To run the PC application:
 ```
 java -jar PCGesture/PCGesture.jar
+```
 
 Install `AndroGesture/app-debug.apk` on your Android device.
